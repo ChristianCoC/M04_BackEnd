@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class UsersRepository {
+    
     private users = [
         {
             id: 1,
@@ -36,5 +37,9 @@ export class UsersRepository {
     ];
     async getUsers() {
         return this.users;
+    };
+
+    async getUserById(id: number) {
+        return this.users.find(user => user.id === id);
     }
 };
