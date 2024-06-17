@@ -4,12 +4,26 @@ import { UsersRepository } from "./users.repository";
 
 @Injectable()
 export class UsersService {
-    constructor(private usersRepository: UsersRepository) { }
-    getUsers() {
-        return this.usersRepository.getUsers();
+    
+    constructor(private usersRepository: UsersRepository) {};
+
+    async getUsers() {
+        return await this.usersRepository.getUsers();
     };
 
-    getUserById(id: number) {
-        return this.usersRepository.getUserById(id);
+    async getUserById(id: number) {
+        return await this.usersRepository.getUserById(id);
+    };
+
+    async createUser(user: any) {
+        return await this.usersRepository.createUser(user);
+    };
+
+    async updateUser(id: number, user: any) {
+        return await this.usersRepository.updateUser(id, user);
+    };
+
+    async deleteUser(id: number) {
+        return await this.usersRepository.deleteUser(id);
     };
 }

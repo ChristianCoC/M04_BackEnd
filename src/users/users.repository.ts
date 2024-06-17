@@ -35,11 +35,43 @@ export class UsersRepository {
             city: 'Buenos Aires' || undefined,
         }
     ];
-    async getUsers() {
-        return this.users;
+
+    async getUsers(): Promise<any[]> {
+        return await Promise.resolve(this.users);
     };
 
-    async getUserById(id: number) {
-        return this.users.find(user => user.id === id);
-    }
+    async getUserById(id: number): Promise<any> {
+        for (const user of this.users) {
+            if (user.id === id) {
+                return user;
+            }
+        }
+        return null;
+    };
+
+    async createUser(user: any) {
+        const id = await Promise.resolve(this.users.length + 1);
+        const newUser = {id, ...user};
+        await Promise.resolve(this.users.push(newUser));
+        return newUser;
+    };
+
+    async updateUser(id: number, user: any) {
+        const userIndex = await Promise.resolve(this.users.findIndex(user => user.id === id));
+        if (userIndex === -1) {
+            throw new Error('User not found');
+        }
+        const updatedUser = { id, ...user };
+        this.users[userIndex] = updatedUser;
+        return updatedUser;
+    };
+
+    async deleteUser(id: number) {
+        const userIndex = await Promise.resolve(this.users.findIndex(user => user.id === id));
+        if (userIndex === -1) {
+            throw new Error('User not found');
+        }
+        const [userDelete] = await Promise.resolve(this.users.splice(userIndex, 1));
+        return userDelete;
+    };
 };

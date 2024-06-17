@@ -10,7 +10,7 @@ export class ProductsRepository {
             description: 'Description 1',
             price: 100,
             stock: true,
-            imgUrl: 'imagen.jpg'
+            imgUrl: 'imagen.jpg',
         },
         {
             id: 2,
@@ -18,7 +18,7 @@ export class ProductsRepository {
             description: 'Description 2',
             price: 200,
             stock: true,
-            imgUrl: 'imagen.jpg'
+            imgUrl: 'imagen.jpg',
         },
         {
             id: 3,
@@ -26,15 +26,46 @@ export class ProductsRepository {
             description: 'Description 3',
             price: 300,
             stock: true,
-            imgUrl: 'imagen.jpg'
+            imgUrl: 'imagen.jpg',
         }
     ];
 
-    async getProducts() {
-        return this.products;
+    async getProducts(): Promise<any[]> {
+        return await Promise.resolve(this.products);
     };
 
-    async getProductsById(id: number) {
-        return this.products.find(product => product.id === id);
+    async getProductsById(id: number): Promise<any> {
+        for (const product of await this.getProducts()) {
+            if (product.id === id) {
+                return product;
+            }
+        }
+        return null;
+    };
+
+    async createProduct(product: any) {
+        const id = this.products.length + 1;
+        const newProduct = { id, ...product };
+        this.products.push(newProduct);
+        return newProduct;
+    };
+
+    async updateProduct(id: number, product: any) {
+        const productIndex = await Promise.resolve(this.products.findIndex(product => product.id === id));
+        if (productIndex === -1) {
+            throw new Error('Product not found');
+        }
+        const updatedProduct = { id, ...product };
+        this.products[productIndex] = updatedProduct;
+        return updatedProduct;
+    };
+
+    async deleteProduct(id: number) {
+        const productIndex = await Promise.resolve(this.products.findIndex(product => product.id === id));
+        if (productIndex === -1) {
+            throw new Error('Product not found');
+        }
+        const [deletedProduct] = await Promise.resolve(this.products.splice(productIndex, 1));
+        return deletedProduct;
     };
 }
