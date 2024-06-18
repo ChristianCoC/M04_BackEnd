@@ -7,8 +7,8 @@ export class UsersService {
     
     constructor(private usersRepository: UsersRepository) {};
 
-    async getUsers() {
-        return await this.usersRepository.getUsers();
+    async getUsers(page: number, limit: number) {
+        return await this.usersRepository.getUsers(page, limit);
     };
 
     async getUserById(id: number) {
@@ -25,5 +25,9 @@ export class UsersService {
 
     async deleteUser(id: number) {
         return await this.usersRepository.deleteUser(id);
+    };
+
+    async loginUser(email: string, password: string) {
+        return await this.usersRepository.loginUser(email, password);
     };
 }

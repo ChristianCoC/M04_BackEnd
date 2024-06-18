@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query } from "@nestjs/common";
 import { UsersService } from "./users.service";
 
 @Controller("users")
@@ -7,8 +7,8 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) {};
 
     @Get()
-    async getUsers() {
-        return await this.usersService.getUsers();
+    async getUsers(@Query('page') page: number = 1, @Query('limit') limit: number = 5) {
+        return await this.usersService.getUsers(page, limit);
     };
 
     @Get(":id")
@@ -20,6 +20,11 @@ export class UsersController {
     @Post()
     async createUser(@Body() user: any) {
         return await this.usersService.createUser(user);
+    };
+
+    @Post('auth/signin')
+    async loginUser(@Body('email') email: string, @Body('password') password: string) {
+        return await this.usersService.loginUser(email, password);
     };
 
     @Put(":id")
