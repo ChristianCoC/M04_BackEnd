@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Put, Delete, Param, HttpCode, Body, Query } from "@nestjs/common";
+import { Controller, Get, Post, Put, Delete, Param, HttpCode, Body, Query, UseGuards } from "@nestjs/common";
 import { ProductsService } from "./products.service";
+import { AuthGuard } from "src/auth/auth.guard";
 
 @Controller("products")
 export class ProductsController {
@@ -18,16 +19,19 @@ export class ProductsController {
 
     @HttpCode(201)
     @Post()
+    @UseGuards(AuthGuard)
     async createProduct(@Body() product: any) {
         return await this.productsService.createProduct(product);
     };
 
     @Put(":id")
+    @UseGuards(AuthGuard)
     async updateProductById(@Param("id") id: string, @Body() product: any) {
         return await this.productsService.updateProduct(Number(id), product);
     };
 
     @Delete(":id")
+    @UseGuards(AuthGuard)
     async deleteProductById(@Param("id") id: string) {
         return await this.productsService.deleteProduct(Number(id));
     };
