@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Orders } from "src/orders/orders.entity";
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
 
 @Entity({
@@ -50,4 +51,7 @@ export class Users {
         length: 50,
     })
     city: string;
+
+    @OneToMany(() => Orders, (order) => order.user)
+    orders: Orders[];
 };

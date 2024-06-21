@@ -1,4 +1,8 @@
 # compiled output
 /dist
+
+# dependencies
 /node_modules
+
+# local environment settings
 .env.development

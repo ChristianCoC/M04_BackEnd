@@ -2,10 +2,14 @@
 import { Controller, Get, Post, Put, Delete, Param, HttpCode, Body, Query, UseGuards } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import { AuthGuard } from "src/auth/auth.guard";
+import { ProductsDbService } from "./productsDb.service";
 
 @Controller("products")
 export class ProductsController {
-    constructor(private readonly productsService: ProductsService) {}
+    constructor(
+        private readonly productsService: ProductsService,
+        private readonly productsDbService: ProductsDbService,
+    ) {}
 
     @Get()
     async getProducts(@Query('page') page: number = 1, @Query('limit') limit: number = 5) {

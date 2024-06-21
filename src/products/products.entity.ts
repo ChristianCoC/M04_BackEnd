@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Categories } from "src/categories/categories.entity";
+import { OrderDetails } from "src/orders/orderDetails.entity";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
 
 @Entity({
@@ -41,5 +43,12 @@ export class Products {
         default: 'imagen.jpg',
     })
     imgUrl: string;
+
+    @ManyToOne(() => Categories, (category) => category.products)
+    @JoinColumn({ name: 'category_id' })
+    category: Categories;
+
+    @ManyToMany(() => OrderDetails, (orderDetails) => orderDetails.products)
+    orderDetails: OrderDetails[];
 
 };

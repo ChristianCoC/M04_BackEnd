@@ -1,4 +1,11 @@
 {
   "material-icon-theme.activeIconPack": "nest",
-  "cSpell.words": ["adress"]
+  "cSpell.words": [
+    "adress",
+    "nestjs",
+    "postgres",
+    "Rivadavia",
+    "signin",
+    "typeorm"
+  ]
 }
