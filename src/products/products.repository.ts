@@ -1,105 +1,57 @@
 import { Injectable, BadRequestException, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Products } from "./products.entity";
+import { Repository } from "typeorm";
 
-function validateProduct(product: any) {
+
+function validateProduct(product: Products) {
     return (
         typeof product.name === 'string' &&
         typeof product.description === 'string' &&
         typeof product.price === 'number' &&
-        typeof product.stock === 'boolean' &&
+        typeof product.stock === 'number' &&
         typeof product.imgUrl === 'string'
     )
 };
 
 @Injectable()
 export class ProductsRepository {
-    
-    private products = [
-        {
-            id: 1,
-            name: 'Product 1',
-            description: 'Description 1',
-            price: 100,
-            stock: true,
-            imgUrl: 'imagen.jpg',
-        },
-        {
-            id: 2,
-            name: 'Product 2',
-            description: 'Description 2',
-            price: 200,
-            stock: true,
-            imgUrl: 'imagen.jpg',
-        },
-        {
-            id: 3,
-            name: 'Product 3',
-            description: 'Description 3',
-            price: 300,
-            stock: true,
-            imgUrl: 'imagen.jpg',
-        },
-        {
-            id: 4,
-            name: 'Product 4',
-            description: 'Description 4',
-            price: 400,
-            stock: true,
-            imgUrl: 'imagen.jpg',
-        },
-        {
-            id: 5,
-            name: 'Product 5',
-            description: 'Description 5',
-            price: 500,
-            stock: true,
-            imgUrl: 'imagen.jpg',
-        }
-    ];
 
-    async getProducts(page: number, limit: number): Promise<any[]> {
+    constructor(@InjectRepository(Products) private productsRepository: Repository<Products>) { }
+
+    async getProducts(page: number, limit: number): Promise<Products[]> {
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
-        return this.products.slice(startIndex, endIndex);
+        return this.productsRepository.find({ skip: startIndex, take: endIndex });
     };
 
-    async getProductsById(id: number): Promise<any> | null {
-        for (const { ...product } of this.products) {
-            if (product.id === id) {
-                return product;
-            }
-        }
-        return null;
+    async getProductsById(id: string): Promise<Products> {
+        return this.productsRepository.findOneBy({ id });
     };
 
-    async createProduct(product: any) {
-        if (!validateProduct(product)) {
-            throw new BadRequestException('Invalid product');
-        }
-        const id = this.products.length + 1;
-        const newProduct = { id, ...product };
-        this.products.push(newProduct);
-        return newProduct;
+    async createProduct(product: Products): Promise<Products> {
+        return this.productsRepository.save(product);
     };
 
-    async updateProduct(id: number, product: any) {
-        if (!validateProduct(product)) {
-            throw new BadRequestException('Invalid product');
+    async updateProduct(id: string, product: Products): Promise<Products> {
+        await this.productsRepository.update(id, product);
+        const updatedProduct = await this.productsRepository.findOneBy({ id });
+        if (!validateProduct) {
+            throw new NotFoundException('Product whit id ${id} not found');
         }
-        const productIndex = this.products.findIndex(product => product.id === id);
-        if (productIndex === -1) {
-            throw new NotFoundException('Product not found');
-        }
-        const updatedProduct = { id, ...product };
-        this.products[productIndex] = updatedProduct;
         return updatedProduct;
     };
 
-    async deleteProduct(id: number) {
-        const productIndex = this.products.findIndex(product => product.id === id);
-        if (productIndex === -1) {
-            throw new NotFoundException('Product not found');
+    async deleteProduct(id: string): Promise<{ message: string; id: string; name: string; }> {
+        const product = await this.productsRepository.findOneBy({ id });
+        if (!validateProduct) {
+            throw new NotFoundException('Product whit id ${id} not found');
         }
-        const [deletedProduct] = this.products.splice(productIndex, 1);
-        return deletedProduct;
+        await this.productsRepository.delete({ id });
+        return {
+            message: 'Product deleted successfully',
+            id: product.id,
+            name: product.name
+        }
     };
-}
+};

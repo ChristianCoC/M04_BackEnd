@@ -10,5 +10,6 @@ export class ProductsDbService {
   
   saveProduct(products: Products) {
     this.productsRepository.save(products);
-  }
-}
+  };
+
+};
