@@ -3,17 +3,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Products } from "./products.entity";
 import { Repository } from "typeorm";
 
-
-function validateProduct(product: Products) {
-    return (
-        typeof product.name === 'string' &&
-        typeof product.description === 'string' &&
-        typeof product.price === 'number' &&
-        typeof product.stock === 'number' &&
-        typeof product.imgUrl === 'string'
-    )
-};
-
 @Injectable()
 export class ProductsRepository {
 
@@ -26,7 +15,14 @@ export class ProductsRepository {
     };
 
     async getProductsById(id: string): Promise<Products> {
-        return this.productsRepository.findOneBy({ id });
+        if (!id) {
+            throw new BadRequestException('Id not found');
+        }
+        try {
+            return await this.productsRepository.findOneBy({ id });
+        } catch (error) {
+            throw new NotFoundException('Product whit id ${id} not found');
+        }
     };
 
     async createProduct(product: Products): Promise<Products> {
@@ -34,24 +30,40 @@ export class ProductsRepository {
     };
 
     async updateProduct(id: string, product: Products): Promise<Products> {
-        await this.productsRepository.update(id, product);
-        const updatedProduct = await this.productsRepository.findOneBy({ id });
-        if (!validateProduct) {
-            throw new NotFoundException('Product whit id ${id} not found');
+        if (!id) {
+            throw new BadRequestException('Id not found');
         }
-        return updatedProduct;
+        try {
+            await this.productsRepository.update(id, product);
+            const updatedProduct = await this.productsRepository.findOneBy({ id });
+            if (!updatedProduct) {
+                throw new NotFoundException('Product whit id ${id} not found');
+            }
+
+            return updatedProduct;
+        } catch (error) {
+            throw new BadRequestException('Failed to update product',error);
+        }
+       
     };
 
     async deleteProduct(id: string): Promise<{ message: string; id: string; name: string; }> {
-        const product = await this.productsRepository.findOneBy({ id });
-        if (!validateProduct) {
-            throw new NotFoundException('Product whit id ${id} not found');
+        if (!id) {
+            throw new BadRequestException('Id not found');
         }
-        await this.productsRepository.delete({ id });
-        return {
-            message: 'Product deleted successfully',
-            id: product.id,
-            name: product.name
+        try {
+            const product = await this.productsRepository.findOneBy({ id });
+            if (!product) {
+                throw new NotFoundException('Product whit id ${id} not found');
+            };
+            await this.productsRepository.delete({ id });
+            return {
+                message: 'Product deleted successfully',
+                id: product.id,
+                name: product.name
+            };
+        } catch (error) {
+            throw new BadRequestException('Failed to delete product',error);
         }
     };
 };
