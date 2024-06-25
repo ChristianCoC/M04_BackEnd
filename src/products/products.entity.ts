@@ -44,8 +44,8 @@ export class Products {
     })
     imgUrl: string;
 
-    @ManyToOne(() => Categories, (category) => category.products)
-    @JoinColumn({ name: 'category_id' })
+    @ManyToOne(() => Categories, category => category.products)
+    @JoinColumn({name: 'category_id'})
     category: Categories;
 
     @ManyToMany(() => OrderDetails, (orderDetails) => orderDetails.products)

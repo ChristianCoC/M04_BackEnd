@@ -11,7 +11,7 @@ export class CategoriesService {
         return await this.categoriesRepository.getCategories();
     };
 
-    async createCategory(): Promise<Categories> {
-        return await this.categoriesRepository.createCategory();
+    async createCategory(category: Categories): Promise<Categories> {
+        return await this.categoriesRepository.createCategory(category);
     };
 }

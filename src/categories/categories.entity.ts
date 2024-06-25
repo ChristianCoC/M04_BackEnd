@@ -1,5 +1,5 @@
 import { Products } from "src/products/products.entity";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
 
 @Entity({
@@ -17,7 +17,7 @@ export class Categories {
     })
     name: string;
 
-    @OneToOne(() => Products, (product) => product.category)
+    @OneToMany(() => Products, product => product.category)
     products: Products[];
 
 };

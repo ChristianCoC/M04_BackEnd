@@ -11,9 +11,8 @@ import { Products } from './products/products.entity';
 import { Categories } from './categories/categories.entity';
 import { Orders } from './orders/orders.entity';
 import { OrderDetails } from './orders/orderDetails.entity';
-import { CategoriesController } from './categories/categories.controller';
-import { CategoriesService } from './categories/categories.service';
 import { CategoriesModule } from './categories/categories.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [ ConfigModule.forRoot({
@@ -33,7 +32,7 @@ import { CategoriesModule } from './categories/categories.module';
         synchronize: true,
         logging: true,
       })
-  }),AuthModule, ProductsModule, UsersModule, CategoriesModule],
+  }),AuthModule, ProductsModule, UsersModule, CategoriesModule, OrdersModule],
   controllers: [],
   providers: [],
 })

@@ -12,8 +12,7 @@ export class CategoriesRepository {
         return await this.categoriesRepository.find();
     };
 
-    async createCategory(): Promise<Categories> {
-        const category = new Categories();
+    async createCategory(category: Categories): Promise<Categories> {
         return await this.categoriesRepository.save(category);
     };
 }
