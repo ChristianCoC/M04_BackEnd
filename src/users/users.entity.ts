@@ -11,14 +11,12 @@ export class Users {
     id: string = uuid();
 
     @Column({
-        type: 'varchar', 
         length: 50,
         nullable: false,
     })
     name: string;
 
     @Column({
-        type: 'varchar',
         length: 50,
         unique: true,
         nullable: false,
@@ -26,28 +24,23 @@ export class Users {
     email: string;
 
     @Column({
-        type: 'varchar',
         length: 20,
         nullable: false,
     })
     password: string;
     
-    @Column({
-        type: 'int'
-    })
+    @Column('int')
     phone: number;
     
     @Column({
-        type: 'varchar',
         length: 50,
     })
     country: string;
 
-    @Column()
+    @Column('text')
     adress: string;
 
     @Column({
-        type: 'varchar',
         length: 50,
     })
     city: string;

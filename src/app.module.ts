@@ -10,7 +10,7 @@ import { Users } from './users/users.entity';
 import { Products } from './products/products.entity';
 import { Categories } from './categories/categories.entity';
 import { Orders } from './orders/orders.entity';
-import { OrderDetails } from './orders/orderDetails.entity';
+import { OrderDetails } from './ordersDetails/orderDetails.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
 

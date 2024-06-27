@@ -11,13 +11,12 @@ export class Categories {
     id: string = uuid();
 
     @Column({
-        type: 'varchar',
         length: 50,
         nullable: false,
     })
     name: string;
 
-    @OneToMany(() => Products, product => product.category)
+    @OneToOne(() => Products, product => product.category)
     products: Products[];
 
 };

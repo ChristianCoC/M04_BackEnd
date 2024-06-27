@@ -1,5 +1,5 @@
 import { Categories } from "src/categories/categories.entity";
-import { OrderDetails } from "src/orders/orderDetails.entity";
+import { OrderDetails } from "../ordersDetails/orderDetails.entity";
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
 
@@ -12,34 +12,29 @@ export class Products {
     id: string = uuid();
 
     @Column({
-        type: 'varchar',
         length: 50,
         nullable: false
     })
     name: string;
 
     @Column({
-        type: 'varchar',
         nullable: false
     })
     description: string;
 
-    @Column({
-        type: 'decimal',
+    @Column('decimal', {
         precision: 10,
         scale: 2,
         nullable: false
     })
     price: number;
 
-    @Column({
-        type: 'int',
+    @Column('int', {
         nullable: false
     })
     stock: number;
 
-    @Column({
-        type: 'varchar',
+    @Column('varchar', {
         default: 'imagen.jpg',
     })
     imgUrl: string;

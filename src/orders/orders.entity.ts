@@ -1,7 +1,7 @@
 import { Users } from "src/users/users.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
-import { OrderDetails } from "./orderDetails.entity";
+import { OrderDetails } from "../ordersDetails/orderDetails.entity";
 
 @Entity({
     name: 'orders'
@@ -12,7 +12,8 @@ export class Orders {
     id: string = uuid();
 
     @Column({
-        type: 'date',
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP',
     })
     date: Date;
 

@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
-import { Orders } from "./orders.entity";
+import { Orders } from "../orders/orders.entity";
 import { Products } from "src/products/products.entity";
 
 @Entity({ 
@@ -11,8 +11,7 @@ export class OrderDetails {
     @PrimaryGeneratedColumn('uuid')
     id: string = uuid();
 
-    @Column({
-        type: 'decimal',
+    @Column('decimal', {
         precision: 10,
         scale: 2,
         nullable: false
@@ -24,5 +23,6 @@ export class OrderDetails {
     order: Orders;
 
     @ManyToMany(() => Products, (products) => products.orderDetails)
-    products: Products;
+    @JoinColumn({ name: 'product_id' })
+    products: Products[];
 };
