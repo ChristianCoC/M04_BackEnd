@@ -11,7 +11,7 @@ export class ProductsRepository {
     async getProducts(page: number, limit: number): Promise<Products[]> {
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
-        return this.productsRepository.find({ skip: startIndex, take: endIndex, relations: ['category_id'] });
+        return this.productsRepository.find({ skip: startIndex, take: endIndex });
     };
 
     async getProductsById(id: string): Promise<Products> {

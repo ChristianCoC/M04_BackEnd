@@ -1,129 +1,77 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-
-function validateUser(users:any) {
-    return (
-        typeof users.name === 'string' && 
-        typeof users.email === 'string' && 
-        typeof users.password === 'string' &&
-        typeof users.adress === 'string' &&
-        typeof users.phone === 'string' &&
-        typeof users.country === 'string' &&
-        typeof users.city === 'string'
-    )
-};
+import { Users } from "./users.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class UsersRepository {
-    
-    private users = [
-        {
-            id: 1,
-            name: 'Christian',
-            email: 'X4lLHC@example.com',
-            password: 'contraseña01',
-            adress: 'Rivadavia 123',
-            phone: '1122334455',
-            country: 'San Martin' || undefined,
-            city: 'Buenos Aires' || undefined,
-        },
-        {
-            id: 2,
-            name: 'Selene',
-            email: 'X4lLHS@example.com',
-            password: 'contraseña02',
-            adress: 'Rivadavia 123',
-            phone: '1122334455',
-            country: 'San Martin' || undefined,
-            city: 'Buenos Aires' || undefined,
-        },
-        {
-            id: 3,
-            name: 'Melisa',
-            email: 'X4lLHM@example.com',
-            password: 'contraseña03',
-            adress: 'Rivadavia 123',
-            phone: '1122334455',
-            country: 'San Martin' || undefined,
-            city: 'Buenos Aires' || undefined,
-        },
-        {
-            id: 4,
-            name: 'Victoria',
-            email: 'X4lLHV@example.com',
-            password: 'contraseña04',
-            adress: 'Rivadavia 123',
-            phone: '1122334455',
-            country: 'San Martin' || undefined,
-            city: 'Buenos Aires' || undefined,
-        },
-        {
-            id: 5,
-            name: 'Adriana',
-            email: 'X4lLHA@example.com',
-            password: 'contraseña05',
-            adress: 'Rivadavia 123',
-            phone: '1122334455',
-            country: 'San Martin' || undefined,
-            city: 'Buenos Aires' || undefined,
-        }
-    ];
 
-    async getUsers(page: number, limit: number): Promise<Omit<any, 'password'>[]> {
+    constructor(@InjectRepository(Users) private usersRepository: Repository<Users>) { }
+
+    async getUsers(page: number, limit: number): Promise<Omit<Users, 'password'>[]> {
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
-        return this.users.map(({ password, ...rest }) => rest).slice(startIndex, endIndex);
+        return this.usersRepository.find({ skip: startIndex, take: endIndex });
     };
-    
-    async getUserById(id: number): Promise<Omit<any, 'password'> | null> {
-        for (const { password, ...user } of this.users) {
-            if (user.id === id) {
-                return user;
-            }
+
+    async getUserById(id: string): Promise<Omit<Users, 'password'> | null> {
+        if (!id) {
+            throw new NotFoundException('User not found');
+        }
+        try {
+            return await this.usersRepository.findOneBy({ id: id });
+        } catch (error) {
+            throw new BadRequestException('Failed to get user', error);
         }
         return null;
+
     };
-    
-    async createUser(user: any) {
-        if (!validateUser(user)) {
-            throw new BadRequestException('Invalid user');
-        }
-        const id = this.users.length + 1;
-        const newUser = { id, ...user };
-        this.users.push(newUser);
-        return {message: 'User created', newUser};
+
+    async createUser(user: Users): Promise<Users> {
+        return await this.usersRepository.save(user);
+
     };
-    
-    async updateUser(id: number, user: any) {
-        if (!validateUser(user)) {
-            throw new BadRequestException('Invalid user');
-        }
-        const userIndex = this.users.findIndex(user => user.id === id);
-        if (userIndex === -1) {
+
+    async updateUser(id: string, user: Users): Promise<Users> {
+        if (!id) {
             throw new NotFoundException('User not found');
         }
-        const updatedUser = { id, ...user };
-        this.users[userIndex] = updatedUser;
-        return {message: 'User updated', updatedUser};
-    };
-    
-    async deleteUser(id: number) {
-        const userIndex = this.users.findIndex(user => user.id === id);
-        if (userIndex === -1) {
-            throw new NotFoundException('User not found');
+        try {
+            await this.usersRepository.update(id, user);
+            const updatedUser = await this.usersRepository.findOneBy({ id: id });
+            if (!updatedUser) {
+                throw new NotFoundException('User not found');
+            }
+            return updatedUser;
+
+        } catch (error) {
+            throw new BadRequestException('Failed to update user', error);
         }
-        const [userDeleted] = this.users.splice(userIndex, 1);
-        return {message: 'User deleted', userDeleted};
+    };
+
+    async deleteUser(id: string): Promise<{ message: string, id: string, name: string }> {
+        if (!id) {
+            throw new BadRequestException('Id not found');
+        }
+        try {
+            const user = await this.usersRepository.findOneBy({ id: id });
+            if (!user) {
+                throw new NotFoundException('User whit id ${id} not found');
+            }
+            await this.usersRepository.delete({ id: id });
+            return {
+                message: 'User deleted successfully',
+                id: user.id,
+                name: user.name
+            };
+
+        } catch (error) {
+            throw new BadRequestException('Failed to delete user', error);
+        }
     };
 
     async loginUser(email: string, password: string) {
-        if(!email || !password) {
-            throw new BadRequestException('email and password are required');
-        }
-        const user = this.users.find(user => user.email === email && user.password === password);
-        if(!user) {
-            throw new BadRequestException('Invalid email or password');
-        }
-        return {message: 'Login successful', user};
+
     };
 
 }

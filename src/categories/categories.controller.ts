@@ -12,23 +12,9 @@ export class CategoriesController {
         return this.categoriesService.getCategories();
     };
 
-    @Post('smartphones')
+    @Post()
     async createSmartphoneCategory(@Body() category: Categories): Promise<Categories> {
         return this.categoriesService.createCategory(category);
     };
 
-    @Post('monitors')
-    async createMonitorCategory(@Body() category: Categories): Promise<Categories> {
-        return this.categoriesService.createCategory(category);
-    };
-
-    @Post('keyboards')
-    async createKeyboardCategory(@Body() category: Categories): Promise<Categories> {
-        return this.categoriesService.createCategory(category);
-    };
-
-    @Post('mouses')
-    async createMouseCategory(@Body() category: Categories): Promise<Categories> {
-        return this.categoriesService.createCategory(category);
-    };
 };

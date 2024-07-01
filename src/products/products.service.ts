@@ -6,7 +6,7 @@ import { Products } from './products.entity';
 @Injectable()
 export class ProductsService {
     
-    constructor(private productsRepository: ProductsRepository) { }
+    constructor(private productsRepository: ProductsRepository) { };
 
     async getProducts(page: number, limit: number): Promise<Products[]> {
         return await this.productsRepository.getProducts(page, limit);

@@ -1,11 +1,12 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { AuthGuard } from "src/auth/auth.guard";
+import { Users } from "./users.entity";
 
 @Controller("users")
 export class UsersController {
 
-    constructor(private readonly usersService: UsersService) {};
+    constructor(private readonly usersService: UsersService) { };
 
     @Get()
     @UseGuards(AuthGuard)
@@ -15,13 +16,13 @@ export class UsersController {
 
     @Get(":id")
     @UseGuards(AuthGuard)
-    async getUserById(@Param("id") id: string) {
-        return await this.usersService.getUserById(Number(id));
+    async getUserById(@Param("id") id: string, ) {
+        return await this.usersService.getUserById((id));
     };
 
     @HttpCode(201)
     @Post()
-    async createUser(@Body() user: any) {
+    async createUser(@Body() user: Users) {
         return await this.usersService.createUser(user);
     };
 
@@ -32,14 +33,14 @@ export class UsersController {
 
     @Put(":id")
     @UseGuards(AuthGuard)
-    async updateUserById(@Param("id") id: string, @Body() user: any) {
-        const updatedUser = await this.usersService.updateUser(Number(id), user);
+    async updateUserById(@Param("id") id: string, @Body() user: Users) {
+        const updatedUser = await this.usersService.updateUser((id), user);
         return updatedUser;
     };
 
     @Delete(":id")
     @UseGuards(AuthGuard)
     async deleteUserById(@Param("id") id: string) {
-        return await this.usersService.deleteUser(Number(id));
+        return await this.usersService.deleteUser((id));
     };
 };

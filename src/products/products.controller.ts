@@ -2,12 +2,12 @@
 import { Controller, Get, Post, Put, Delete, Param, HttpCode, Body, Query, UseGuards } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import { AuthGuard } from "src/auth/auth.guard";
+import { Products } from "./products.entity";
 
 @Controller("products")
 export class ProductsController {
-    constructor(
-        private readonly productsService: ProductsService,
-    ) {}
+    
+    constructor(private readonly productsService: ProductsService) { }
 
     @Get()
     async getProducts(@Query('page') page: number = 1, @Query('limit') limit: number = 5) {
@@ -22,13 +22,13 @@ export class ProductsController {
     @HttpCode(201)
     @Post()
     @UseGuards(AuthGuard)
-    async createProduct(@Body() product: any) {
+    async createProduct(@Body() product: Products) {
         return await this.productsService.createProduct(product);
     };
 
     @Put(":id")
     @UseGuards(AuthGuard)
-    async updateProductById(@Param("id") id: string, @Body() product: any) {
+    async updateProductById(@Param("id") id: string, @Body() product: Products) {
         return await this.productsService.updateProduct((id), product);
     };
 

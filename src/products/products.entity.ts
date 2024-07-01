@@ -12,35 +12,40 @@ export class Products {
     id: string = uuid();
 
     @Column({
+        type: 'varchar',
         length: 50,
         nullable: false
     })
     name: string;
 
     @Column({
+        type: 'text',
         nullable: false
     })
     description: string;
 
-    @Column('decimal', {
+    @Column({
+        type: 'decimal',
         precision: 10,
         scale: 2,
         nullable: false
     })
     price: number;
 
-    @Column('int', {
+    @Column({
+        type: 'int',
         nullable: false
     })
     stock: number;
 
-    @Column('varchar', {
+    @Column({
+        type: 'varchar',
         default: 'imagen.jpg',
     })
     imgUrl: string;
 
     @ManyToOne(() => Categories, category => category.products)
-    @JoinColumn({name: 'category_id'})
+    @JoinColumn({ name: 'category_id' })
     category: Categories;
 
     @ManyToMany(() => OrderDetails, (orderDetails) => orderDetails.products)
